@@ -4,7 +4,6 @@ namespace Laminas\Psr7Bridge;
 
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Stream;
-use Laminas\Http\Header\GenericHeader;
 use Laminas\Http\Headers;
 use Laminas\Http\Response as LaminasResponse;
 use Psr\Http\Message\ResponseInterface;

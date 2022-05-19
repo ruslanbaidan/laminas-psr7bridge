@@ -5,10 +5,14 @@ namespace Laminas\Psr7Bridge\Laminas;
 use Laminas\Http\Header\Cookie;
 use Laminas\Http\PhpEnvironment\Request as BaseRequest;
 use Laminas\Stdlib\Parameters;
-use Psr\Http\Message\UriInterface;
 
 class Request extends BaseRequest
 {
+    /**
+     * @var array
+     */
+    private $attributes;
+
     /**
      * Overload constructor.
      *
@@ -23,6 +27,7 @@ class Request extends BaseRequest
      * @param array $postParameters
      * @param array $uploadedFiles
      * @param array $serverParams
+     * @param array $attributes
      */
     public function __construct(
         $method,
@@ -32,7 +37,8 @@ class Request extends BaseRequest
         array $queryStringArguments,
         array $postParameters,
         array $uploadedFiles,
-        array $serverParams
+        array $serverParams,
+        array $attributes
     ) {
         $this->setAllowCustomMethods(true);
 
@@ -58,5 +64,29 @@ class Request extends BaseRequest
 
         // Do not use `setServerParams()`, as that extracts headers, URI, etc.
         $this->serverParams = new Parameters($serverParams);
+
+        $this->attributes = $attributes;
+    }
+
+
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    public function setAttributes(array $attributes): self
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    public function getAttribute($attribute, $default = null)
+    {
+        if (!\array_key_exists($attribute, $this->attributes)) {
+            return $default;
+        }
+
+        return $this->attributes[$attribute];
     }
 }

@@ -31,7 +31,8 @@ final class Psr7ServerRequest
                 $psr7Request->getQueryParams(),
                 [],
                 [],
-                $psr7Request->getServerParams()
+                $psr7Request->getServerParams(),
+                $psr7Request->getAttributes()
             );
         }
 
@@ -43,7 +44,8 @@ final class Psr7ServerRequest
             $psr7Request->getQueryParams(),
             $psr7Request->getParsedBody() ?: [],
             self::convertUploadedFiles($psr7Request->getUploadedFiles()),
-            $psr7Request->getServerParams()
+            $psr7Request->getServerParams(),
+            $psr7Request->getAttributes()
         );
         $laminasRequest->setContent($psr7Request->getBody());
 
@@ -83,6 +85,10 @@ final class Psr7ServerRequest
         $cookie = $laminasRequest->getCookie();
         if (false !== $cookie) {
             $request = $request->withCookieParams($cookie->getArrayCopy());
+        }
+
+        foreach ($request->getAttributes() as $attribute => $value) {
+            $request = $request->withAttribute($attribute, $value);
         }
 
         return $request->withParsedBody($post);
